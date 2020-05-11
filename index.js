@@ -11,6 +11,11 @@ let users = [
         id: shortid.generate(),
         name: "Tony Hawk",
         bio: "Pro skater from the 90's"
+    },
+    {
+        id: shortid.generate(),
+        name: "Donald Trump",
+        bio: "President"
     }
 ];
 
@@ -58,7 +63,19 @@ server.delete("/api/users/:id", (req, res) => {
 });
 
 server.patch("/api/users/:id", (req, res) => {
+    const { id } = req.params;
+    
 
+    let user = users.find(user => user.id === id);
+    if (!req.body.name || !req.body.bio) {
+        res.status(400).json({ errorMessage: "Please provide name and bio for the user." })
+    } else if (!user) {
+        res.status(404).json({ message: "The user with the specified ID does not exist." })
+    } else {
+        user.name = req.body.name
+        user.bio = req.body.bio
+        res.status(200).json(user)
+    }
 });
 
 server.listen(3000, () => {
